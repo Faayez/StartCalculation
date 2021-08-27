@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StartCalculation.Domain.Domain.Entities;
-using StartCalculation.Services.Configurations;
 
 namespace StartCalculation.Services
 {
@@ -8,11 +7,6 @@ namespace StartCalculation.Services
     {
         public CalculatorDbContext(DbContextOptions<CalculatorDbContext> options) : base(options)
         { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new CalculationConfiguration());
-        }
 
         #region DbSets
 

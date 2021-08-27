@@ -11,6 +11,7 @@ namespace StartCalculation.Services.ViewModels
 
         public string Expression { get; set; }
 
+
         public double? Result;
 
         public int Progess { get; set; }
