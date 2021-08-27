@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StartCalculation.Domain.Domain.Entities
 {
@@ -11,6 +13,8 @@ namespace StartCalculation.Domain.Domain.Entities
             FinishedOn = CreatedOn.AddSeconds(rnd.Next(20, 60));
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         public CalculationStatus Status { get; set; }
@@ -20,8 +24,8 @@ namespace StartCalculation.Domain.Domain.Entities
         public OperationType Operator { get; set; }
 
         public double Input2 { get; set; }
-
-        public double? Result;
+            
+        public double? Result { get; set; }
 
         public int Progess => (DateTime.Now - CreatedOn).Seconds / (FinishedOn - CreatedOn).Seconds * 100;
 
