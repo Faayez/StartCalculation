@@ -8,7 +8,8 @@ namespace StartCalculation.Api.Infrastructure.Startup
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddTransient<ICalculationRepository, CalculationRepository>();
+            services.AddScoped<ICalculationRepository, CalculationRepository>();
+            services.AddScoped<ICalculationResultRepository, CalculationResultRepository>();
         }
 
         public static void RegisterMapping(this IServiceCollection services)

@@ -1,5 +1,5 @@
-﻿using StartCalculation.Domain.Domain.Entities;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace StartCalculation.Services.ViewModels
 {
@@ -7,13 +7,31 @@ namespace StartCalculation.Services.ViewModels
     {
         public Guid Id { get; set; }
 
-        public CalculationStatus Status { get; set; }
+        public string Status { get; set; }
 
         public string Expression { get; set; }
 
+        public double? Result { get; set; }
 
-        public double? Result;
+        [JsonIgnore]
+        public int ProcessEstimate { get; private set; }
 
-        public int Progess { get; set; }
+        [JsonIgnore]
+        public DateTime CreatedOn { get; private set; }
+
+        public int Progess
+        {
+            get
+            {
+                if ((DateTime.Now - CreatedOn).Ticks > new TimeSpan(0, 0, ProcessEstimate).Ticks)
+                {
+                    return 100;
+                }
+                else
+                {
+                    return (int)(100.0 * (DateTime.Now - CreatedOn).Ticks / new TimeSpan(0, 0, ProcessEstimate).Ticks);
+                }
+            }
+        }
     }
 }

@@ -6,13 +6,6 @@ namespace StartCalculation.Domain.Domain.Entities
 {
     public class Calculation
     {
-        public Calculation()
-        {
-            Random rnd = new Random();
-            CreatedOn = DateTime.Now;
-            FinishedOn = CreatedOn.AddSeconds(rnd.Next(20, 60));
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
@@ -24,13 +17,11 @@ namespace StartCalculation.Domain.Domain.Entities
         public OperationType Operator { get; set; }
 
         public double Input2 { get; set; }
-            
+
         public double? Result { get; set; }
 
-        public int Progess => (DateTime.Now - CreatedOn).Seconds / (FinishedOn - CreatedOn).Seconds * 100;
+        public int ProcessEstimate { get; private set; }
 
         public DateTime CreatedOn { get; private set; }
-
-        public DateTime FinishedOn { get; private set; }
     }
 }
