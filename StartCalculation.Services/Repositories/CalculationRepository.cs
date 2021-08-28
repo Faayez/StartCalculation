@@ -15,12 +15,14 @@ namespace StartCalculation.Services.Repositories
     {
         private readonly CalculatorDbContext _dbContext;
         private readonly DbSet<Calculation> _calculations;
+        private readonly ICalculationResultRepository _calculationResult;
         private readonly IMapper _mapper;
 
-        public CalculationRepository(CalculatorDbContext dbContext, IMapper mapper)
+        public CalculationRepository(CalculatorDbContext dbContext, ICalculationResultRepository calculationResult, IMapper mapper)
         {
             _dbContext = dbContext;
             _calculations = _dbContext?.Set<Calculation>();
+            _calculationResult = calculationResult;
             _mapper = mapper;
         }
 
@@ -36,8 +38,8 @@ namespace StartCalculation.Services.Repositories
 
         public async Task<Guid> InsertAsync(CalculationInsertDto calculation)
         {
-            var entity = _mapper.Map<Calculation>(calculation);
-            entity.Result = Calculator.Calculate(entity.Input1, entity.Input2, entity.Operator);
+            Random rnd = new Random();
+            var processEstimate = rnd.Next(20, 60);
 
             var param = new SqlParameter[] {
                         new SqlParameter() {
@@ -49,47 +51,44 @@ namespace StartCalculation.Services.Repositories
                             ParameterName = "@Status",
                             SqlDbType =  System.Data.SqlDbType.TinyInt,
                             Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.Status
+                            Value = CalculationStatus.Running
                         },
                         new SqlParameter() {
                             ParameterName = "@Input1",
                             SqlDbType =  System.Data.SqlDbType.Float,
                             Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.Input1
+                            Value = calculation.Input1
                         },
                         new SqlParameter() {
                             ParameterName = "@Operator",
                             SqlDbType =  System.Data.SqlDbType.TinyInt,
                             Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.Operator
+                            Value = calculation.Operator
                         },
                         new SqlParameter() {
                             ParameterName = "@Input2",
                             SqlDbType =  System.Data.SqlDbType.Float,
                             Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.Input2
-                        },
-                        new SqlParameter() {
-                            ParameterName = "@Result",
-                            SqlDbType =  System.Data.SqlDbType.Float,
-                            Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.Result
+                            Value = calculation.Input2
                         },
                         new SqlParameter() {
                             ParameterName = "@CreatedOn",
                             SqlDbType =  System.Data.SqlDbType.DateTime2,
                             Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.CreatedOn
+                            Value = DateTime.Now
                         },
                         new SqlParameter() {
-                            ParameterName = "@FinishedOn",
-                            SqlDbType =  System.Data.SqlDbType.DateTime2,
+                            ParameterName = "@ProcessEstimate",
+                            SqlDbType =  System.Data.SqlDbType.Int,
                             Direction = System.Data.ParameterDirection.Input,
-                            Value = entity.FinishedOn
+                            Value = processEstimate
                         }};
 
-            await _dbContext.Database.ExecuteSqlRawAsync("EXEC InsertCalculations @Id OUT, @Status, @Input1, @Operator, @Input2, @Result, @CreatedOn, @FinishedOn", param);
-            return new Guid(param[0].Value.ToString());
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC InsertCalculation @Id OUT, @Status, @Input1, @Operator, @Input2, @CreatedOn, @ProcessEstimate", param);
+            var id = new Guid(param[0].Value.ToString());
+
+            Task.Run(() => _calculationResult.UpdateResultAsync(id, calculation, processEstimate));
+            return id;
         }
     }
 }
