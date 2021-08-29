@@ -40,6 +40,14 @@ namespace StartCalculation.API
                     Version = "1"
                 });
             });
+
+            services.AddCors(opt => opt.AddDefaultPolicy(p =>
+            {
+                p.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("*");
+            }));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,6 +66,8 @@ namespace StartCalculation.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

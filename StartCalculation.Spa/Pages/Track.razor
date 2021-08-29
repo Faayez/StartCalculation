@@ -1,0 +1,43 @@
+﻿@page "/Track/{Id}"
+
+@inject IHttpClientFactory ClientFactory
+
+<h2>Tracking a Calculation</h2>
+<p>@calculationStatus.Status</p>
+<p>@calculationStatus.Progess %</p>
+<p>
+    <span>@calculationStatus.Expression</span>
+    <span> = </span>
+    <span>
+        @if (calculationStatus.Result.HasValue)
+        {
+            @calculationStatus.Result
+        }
+        else
+        {
+            <i>?</i>
+        }
+    </span>
+</p>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private CalculationStatusDto calculationStatus = new();
+    private const string ApiUrl = "https://localhost:44350/Calculations";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient();
+        var response = await client.GetAsync($"{ApiUrl}/{Id}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        calculationStatus = JsonSerializer.Deserialize<CalculationStatusDto>(content, options);
+    }
+}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 
 namespace StartCalculation.Services.ViewModels
 {
@@ -13,23 +12,22 @@ namespace StartCalculation.Services.ViewModels
 
         public double? Result { get; set; }
 
-        [JsonIgnore]
-        public int ProcessEstimate { get; private set; }
+        public int ProcessEstimate { get; set; }
 
-        [JsonIgnore]
-        public DateTime CreatedOn { get; private set; }
+        public DateTime CreatedOn { get; set; }
 
         public int Progess
         {
             get
             {
-                if ((DateTime.Now - CreatedOn).Ticks > new TimeSpan(0, 0, ProcessEstimate).Ticks)
+                var now = DateTime.Now;
+                if ((now - CreatedOn).Ticks > new TimeSpan(0, 0, ProcessEstimate).Ticks)
                 {
                     return 100;
                 }
                 else
                 {
-                    return (int)(100.0 * (DateTime.Now - CreatedOn).Ticks / new TimeSpan(0, 0, ProcessEstimate).Ticks);
+                    return (int)(100.0 * (now - CreatedOn).Ticks / new TimeSpan(0, 0, ProcessEstimate).Ticks);
                 }
             }
         }

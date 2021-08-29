@@ -21,7 +21,7 @@ namespace StartCalculation.Services.Repositories
         {
             await Task.Delay(processEstimate * 1000);
 
-            var result = Calculator.Calculate(calculation.Input1, calculation.Input2, calculation.Operator);
+            var result = Calculator.Calculate(calculation.Input1, calculation.Input2, calculation.Operator.Value);
             var status = result.HasValue ? CalculationStatus.Completed : CalculationStatus.Failed;
 
             var param = new SqlParameter[] {
