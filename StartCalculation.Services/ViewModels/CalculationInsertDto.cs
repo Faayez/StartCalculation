@@ -10,7 +10,7 @@ namespace StartCalculation.Services.ViewModels
         public double Input1 { get; set; }
 
         [Required]
-        public OperationType Operator { get; set; }
+        public OperationType? Operator { get; set; }
 
         [Required]
         public double Input2 { get; set; }

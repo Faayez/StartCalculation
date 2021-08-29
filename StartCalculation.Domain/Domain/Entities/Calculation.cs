@@ -20,8 +20,8 @@ namespace StartCalculation.Domain.Domain.Entities
 
         public double? Result { get; set; }
 
-        public int ProcessEstimate { get; private set; }
+        public int ProcessEstimate { get; set; }
 
-        public DateTime CreatedOn { get; private set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

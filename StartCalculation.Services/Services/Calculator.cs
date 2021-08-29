@@ -26,7 +26,7 @@ namespace StartCalculation.Services
                         return default;
                 }
             }
-            catch 
+            catch
             {
                 return default;
             }
