@@ -1,13 +1,13 @@
-﻿@page "/fetchdata"
+﻿@page "/details"
 
-@using StartCalculationBlazor.API.Data
-@inject WeatherForecastService ForecastService
+@using StartCalculation.Services.ViewModels
+@inject CalculationStatusDto Detail
 
-<h1>Weather forecast</h1>
+<h1>Calculation Detail</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<p>This component demonstrates Details of calculation</p>
 
-@if (forecasts == null)
+@if (calculations == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -23,7 +23,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var calculation in calculations)
             {
                 <tr>
                     <td>@forecast.Date.ToShortDateString()</td>
@@ -37,10 +37,10 @@ else
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    private CalculationStatusDto[] calculations;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        calculations = await Detail.Result();
     }
 }
